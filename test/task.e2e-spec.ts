@@ -21,8 +21,11 @@ describe('TaskController', () => {
         });
 
         afterEach(async () => {
+        
             await taskService.resetData();
             await userService.resetData();
+            
+            
             await app.close();
         });
 
@@ -45,6 +48,7 @@ describe('TaskController', () => {
             );
 
             for (const created of createdElements) {
+                console.log(`CREATED: ${created}`)
                 const response = await request(app.getHttpServer()).get(
                     `/task/user/${created.user.id}`,
                 );
@@ -56,6 +60,7 @@ describe('TaskController', () => {
                         (createdTask) => createdTask.id === task.id,
                     ),
                 );
+                console.log(response.body)
                 expect(haveAllTasksBeenReturned).toBe(true);
             }
         });
@@ -71,8 +76,8 @@ describe('TaskController', () => {
         });
 
         afterEach(async () => {
-            await taskService.resetData();
             await userService.resetData();
+            await taskService.resetData();
             await app.close();
         });
 
@@ -146,6 +151,7 @@ async function createTasksFor2DifferentUsers(
     taskService: TaskService,
 ): Promise<{ user: any; tasks: any[] }[]> {
     const createdUser1 = await createUserUsing(userService, 'email_1@test.com');
+    console.log(`CRERATED USER1 = ${createdUser1.id}, ${createdUser1.email}`)
     for (let count = 0; count < 15; count++) {
         await taskService.addTask(`task #${count}`, createdUser1.id, 1);
     }
@@ -169,6 +175,8 @@ async function createTasksFor2DifferentUsers(
 
 async function createNestApplication(): Promise<INestApplication> {
     process.env.DATABASE_NAME = 'test_nestjs-final-test-db_TASKS';
+    console.log(process.env.DATABASE_NAME)
+    console.log(process.env.DATABASE_URL)
 
     const module = await Test.createTestingModule({
         imports: [AppModule],
@@ -181,6 +189,10 @@ async function createUserUsing(
     userService: UserService,
     email: string,
 ): Promise<any> {
-    await userService.addUser(email);
-    return userService.getUser(email) as any;
+    const res = await userService.addUser(email);
+    console.log(`added USER1 = ${res.id}, ${res.email}`)
+    let user = await userService.getUser(email)
+    console.log(`getted USER1 = ${user.id}, ${user.email}`)
+    //console.log(`CRERATED USER1 = ${user}`)
+    return await userService.getUser(email) as any;
 }
