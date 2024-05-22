@@ -2,7 +2,6 @@ import { Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, Pos
 import { UserService } from './user.service';
 import { UserDto } from './user.dto';
 import { isValidEmail } from './user.verification';
-import { isInstance } from 'class-validator';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 @Controller()
@@ -12,7 +11,6 @@ export class UserController {
   @Post()
   @HttpCode(201)
   async addUser( @Body() dto: UserDto) {
-    console.log(dto)
     const email = dto.email
     if (!isValidEmail(email)) {
         throw new HttpException(
@@ -22,7 +20,6 @@ export class UserController {
     }
     try {
       const res = await this.userService.addUser(email)
-      console.log(res)
       return res
     } catch(e){
       if (e instanceof PrismaClientKnownRequestError) {

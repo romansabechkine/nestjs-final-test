@@ -39,12 +39,6 @@ export class TaskController {
   async getUserTasks( @Param('id') userId: string) {
    
     const tasks = await this.taskService.getUserTasks(userId)
-    /*if (tasks.length == 0) {
-        throw new HttpException(
-            "Not valid user!",
-            HttpStatus.BAD_REQUEST
-        )
-    }*/
     return tasks
   }
 

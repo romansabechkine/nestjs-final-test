@@ -4,7 +4,6 @@ import { Test } from '@nestjs/testing';
 import { UserService } from '../src/user/user.service';
 import * as request from 'supertest';
 
-
 describe('UserController', () => {
     let app: INestApplication;
     let userService: UserService;
